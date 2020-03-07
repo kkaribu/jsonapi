@@ -13,21 +13,21 @@ import (
 
 // Attribute types
 const (
-	AttrTypeInvalid = iota
-	AttrTypeString
-	AttrTypeInt
-	AttrTypeInt8
-	AttrTypeInt16
-	AttrTypeInt32
-	AttrTypeInt64
-	AttrTypeUint
-	AttrTypeUint8
-	AttrTypeUint16
-	AttrTypeUint32
-	AttrTypeUint64
-	AttrTypeBool
-	AttrTypeTime
-	AttrTypeBytes
+	AttrTypeInvalid = ""
+	AttrTypeString  = "string"
+	AttrTypeInt     = "int"
+	AttrTypeInt8    = "int8"
+	AttrTypeInt16   = "int16"
+	AttrTypeInt32   = "int32"
+	AttrTypeInt64   = "int64"
+	AttrTypeUint    = "uint"
+	AttrTypeUint8   = "uint8"
+	AttrTypeUint16  = "uint16"
+	AttrTypeUint32  = "uint32"
+	AttrTypeUint64  = "uint64"
+	AttrTypeBool    = "bool"
+	AttrTypeTime    = "time"
+	AttrTypeBytes   = "bytes"
 )
 
 // A Type stores all the necessary information about a type as represented in
@@ -182,7 +182,7 @@ func (t Type) Copy() Type {
 // Attr represents a resource attribute.
 type Attr struct {
 	Name     string
-	Type     int
+	Type     string
 	Nullable bool
 }
 
@@ -441,50 +441,50 @@ func GetAttrType(t string) (int, bool) {
 	}
 }
 
-// GetAttrTypeString returns the name of the attribute type specified by t (see
-// constants) and nullable.
-func GetAttrTypeString(t int, nullable bool) string {
-	str := ""
+// // GetAttrTypeString returns the name of the attribute type specified by t (see
+// // constants) and nullable.
+// func GetAttrTypeString(t int, nullable bool) string {
+// 	str := ""
 
-	switch t {
-	case AttrTypeString:
-		str = "string"
-	case AttrTypeInt:
-		str = "int"
-	case AttrTypeInt8:
-		str = "int8"
-	case AttrTypeInt16:
-		str = "int16"
-	case AttrTypeInt32:
-		str = "int32"
-	case AttrTypeInt64:
-		str = "int64"
-	case AttrTypeUint:
-		str = "uint"
-	case AttrTypeUint8:
-		str = "uint8"
-	case AttrTypeUint16:
-		str = "uint16"
-	case AttrTypeUint32:
-		str = "uint32"
-	case AttrTypeUint64:
-		str = "uint64"
-	case AttrTypeBool:
-		str = "bool"
-	case AttrTypeTime:
-		str = "time.Time"
-	case AttrTypeBytes:
-		str = "[]uint8"
-	default:
-		str = ""
-	}
+// 	switch t {
+// 	case AttrTypeString:
+// 		str = "string"
+// 	case AttrTypeInt:
+// 		str = "int"
+// 	case AttrTypeInt8:
+// 		str = "int8"
+// 	case AttrTypeInt16:
+// 		str = "int16"
+// 	case AttrTypeInt32:
+// 		str = "int32"
+// 	case AttrTypeInt64:
+// 		str = "int64"
+// 	case AttrTypeUint:
+// 		str = "uint"
+// 	case AttrTypeUint8:
+// 		str = "uint8"
+// 	case AttrTypeUint16:
+// 		str = "uint16"
+// 	case AttrTypeUint32:
+// 		str = "uint32"
+// 	case AttrTypeUint64:
+// 		str = "uint64"
+// 	case AttrTypeBool:
+// 		str = "bool"
+// 	case AttrTypeTime:
+// 		str = "time.Time"
+// 	case AttrTypeBytes:
+// 		str = "[]uint8"
+// 	default:
+// 		str = ""
+// 	}
 
-	if nullable {
-		return "*" + str
-	}
+// 	if nullable {
+// 		return "*" + str
+// 	}
 
-	return str
-}
+// 	return str
+// }
 
 // GetZeroValue returns the zero value of the attribute type represented by the
 // specified int (see constants).
