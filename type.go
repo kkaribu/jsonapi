@@ -598,3 +598,57 @@ func GetZeroValue(t int, nullable bool) interface{} {
 		return nil
 	}
 }
+
+// GetTypedValue parses v into a variable of type t and returns it.
+//
+// If nullable is true, then the returned value is a pointer that points to the
+// value of type t.
+//
+// If the operation is not possible, an error is returned.
+func GetTypedValue(v string, t int, nullable bool) (interface{}, error) {
+	switch t {
+	case AttrTypeString:
+		return v, nil
+	case AttrTypeInt:
+		i, err := strconv.ParseInt(v, 10, 64)
+		return int(i), err
+	case AttrTypeInt8:
+		i, err := strconv.ParseInt(v, 10, 8)
+		return int8(i), err
+	case AttrTypeInt16:
+		i, err := strconv.ParseInt(v, 10, 16)
+		return int16(i), err
+	case AttrTypeInt32:
+		i, err := strconv.ParseInt(v, 10, 32)
+		return int32(i), err
+	case AttrTypeInt64:
+		i, err := strconv.ParseInt(v, 10, 64)
+		return i, err
+	case AttrTypeUint:
+		i, err := strconv.ParseUint(v, 10, 64)
+		return uint(i), err
+	case AttrTypeUint8:
+		i, err := strconv.ParseUint(v, 10, 8)
+		return uint8(i), err
+	case AttrTypeUint16:
+		i, err := strconv.ParseUint(v, 10, 16)
+		return uint16(i), err
+	case AttrTypeUint32:
+		i, err := strconv.ParseUint(v, 10, 32)
+		return uint32(i), err
+	case AttrTypeUint64:
+		i, err := strconv.ParseUint(v, 10, 64)
+		return i, err
+	case AttrTypeBool:
+		return strconv.ParseBool(v)
+	case AttrTypeTime:
+		return time.Parse(time.RFC3339Nano, v)
+	case AttrTypeBytes:
+		// TODO Implement string to []byte
+		// the proper way. How are slices
+		// of bytes represented as strings?
+		return nil, nil
+	default:
+		return nil, errors.New("invalid type")
+	}
+}
