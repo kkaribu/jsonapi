@@ -204,3 +204,7 @@ It is also possible to build a `URL` from a `Schema` and a `SimpleURL` which con
 Check out the [documentation](https://pkg.go.dev/github.com/mfcochauxlaberge/jsonapi?tab=doc).
 
 The best way to learn how to use it is to look at documentation, the examples, and the code itself.
+
+## Contributing
+
+TODO.
