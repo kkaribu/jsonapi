@@ -1,6 +1,7 @@
 package jsonapi
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -597,4 +598,164 @@ func GetZeroValue(t int, nullable bool) interface{} {
 	default:
 		return nil
 	}
+}
+
+// BytesToVar unmarshals the data into a variable of the type represented by the
+// expected type.
+//
+// t is the type and nullable makes it a pointer if set to true.
+//
+// For example, calling Unmarshal(AttrTypeInt, true, []byte{1}) will return a
+// value of type *int that points to an int equal to 1. The returned value is
+// interface{}, so assertion is needed, but safe if no error is returned.
+func BytesToVar(t int, nullable bool, data []byte) (interface{}, error) {
+	if nullable && data == nil {
+		return GetZeroValue(t, nullable), nil
+	}
+
+	var (
+		v   interface{}
+		err error
+	)
+
+	switch t {
+	case AttrTypeString:
+		s := string(data)
+
+		if nullable {
+			v = &s
+		} else {
+			v = s
+		}
+	case AttrTypeInt:
+		i, _ := binary.Varint(data)
+
+		if nullable {
+			n := int(i)
+			v = &n
+		} else {
+			v = int(i)
+		}
+	case AttrTypeInt8:
+		i, _ := binary.Varint(data)
+
+		if nullable {
+			n := int8(i)
+			v = &n
+		} else {
+			v = int8(i)
+		}
+	case AttrTypeInt16:
+		i, _ := binary.Varint(data)
+
+		if nullable {
+			n := int16(i)
+			v = &n
+		} else {
+			v = int16(i)
+		}
+	case AttrTypeInt32:
+		i, _ := binary.Varint(data)
+
+		if nullable {
+			n := int32(i)
+			v = &n
+		} else {
+			v = int32(i)
+		}
+	case AttrTypeInt64:
+		i, _ := binary.Varint(data)
+
+		if nullable {
+			n := i
+			v = &n
+		} else {
+			v = i
+		}
+	case AttrTypeUint:
+		i, _ := binary.Uvarint(data)
+
+		if nullable {
+			n := uint(i)
+			v = &n
+		} else {
+			v = uint(i)
+		}
+	case AttrTypeUint8:
+		i, _ := binary.Uvarint(data)
+
+		if nullable {
+			n := uint8(i)
+			v = &n
+		} else {
+			v = uint8(i)
+		}
+	case AttrTypeUint16:
+		i, _ := binary.Uvarint(data)
+
+		if nullable {
+			n := uint16(i)
+			v = &n
+		} else {
+			v = uint16(i)
+		}
+	case AttrTypeUint32:
+		i, _ := binary.Uvarint(data)
+
+		if nullable {
+			n := uint32(i)
+			v = &n
+		} else {
+			v = uint32(i)
+		}
+	case AttrTypeUint64:
+		i, _ := binary.Varint(data)
+
+		if nullable {
+			n := i
+			v = &n
+		} else {
+			v = i
+		}
+	case AttrTypeBool:
+		switch data[0] {
+		case 1:
+			v = true
+		case 0:
+			v = false
+		default:
+			err = errors.New("data doesn't represent a boolean")
+		}
+
+		if nullable {
+			b := v.(bool)
+			v = &b
+		}
+	case AttrTypeTime:
+		var t time.Time
+		t, err = time.Parse(time.RFC3339Nano, string(data))
+
+		if nullable {
+			v = &t
+		} else {
+			v = t
+		}
+	case AttrTypeBytes:
+		b := make([]byte, len(data))
+		_ = copy(b, data)
+
+		if nullable {
+			v = &b
+		} else {
+			v = b
+		}
+	default:
+		err = errors.New("unknown type")
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return v, nil
 }

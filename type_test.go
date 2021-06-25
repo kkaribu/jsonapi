@@ -199,6 +199,83 @@ func TestAttrUnmarshalToType(t *testing.T) {
 	assert.Nil(val)
 }
 
+func TestBytesToVar(t *testing.T) {
+	assert := assert.New(t)
+
+	tm, _ := time.Parse(time.RFC3339Nano, "2012-05-16T17:45:28.2539Z")
+
+	tests := []struct {
+		typ      string
+		data     []byte
+		expected interface{}
+	}{
+		{typ: "string", data: []byte("str"), expected: "str"},
+		{typ: "int", data: []byte{1}, expected: int(1)},
+		{typ: "int8", data: []byte{8}, expected: int8(8)},
+		{typ: "int16", data: []byte{16}, expected: int16(16)},
+		{typ: "int32", data: []byte{32}, expected: int32(32)},
+		{typ: "int64", data: []byte{64}, expected: int64(64)},
+		{typ: "uint", data: []byte{1}, expected: uint(1)},
+		{typ: "uint8", data: []byte{8}, expected: uint8(8)},
+		{typ: "uint16", data: []byte{16}, expected: uint16(16)},
+		{typ: "uint32", data: []byte{32}, expected: uint32(32)},
+		{typ: "uint64", data: []byte{64}, expected: uint64(64)},
+		{typ: "bool", data: []byte{1}, expected: true},
+		{typ: "time", data: []byte("2012-05-16T17:45:28.2539Z"), expected: tm},
+		{typ: "bytes", data: []byte{1, 2, 3}, expected: int(1)},
+		{typ: "*string", data: []byte("str"), expected: int(1)},
+		{typ: "*int", data: []byte{1}, expected: ptr(int(1))},
+		{typ: "*int8", data: []byte{8}, expected: ptr(int8(8))},
+		{typ: "*int16", data: []byte{16}, expected: ptr(int16(16))},
+		{typ: "*int32", data: []byte{32}, expected: ptr(int32(32))},
+		{typ: "*int64", data: []byte{64}, expected: ptr(int64(64))},
+		{typ: "*uint", data: []byte{1}, expected: ptr(uint(1))},
+		{typ: "*uint8", data: []byte{8}, expected: ptr(uint8(8))},
+		{typ: "*uint16", data: []byte{16}, expected: ptr(uint16(16))},
+		{typ: "*uint32", data: []byte{32}, expected: ptr(uint32(32))},
+		{typ: "*uint64", data: []byte{64}, expected: ptr(uint64(64))},
+		{typ: "*bool", data: []byte{1}, expected: ptr(true)},
+		{typ: "*time", data: []byte("2012-05-16T17:45:28.2539Z"), expected: &t},
+		{typ: "*bytes", data: []byte{1, 2, 3}, expected: &[]byte{1, 2, 3}},
+	}
+
+	for _, test := range tests {
+		typ, n := GetAttrType(test.typ)
+		v, err := BytesToVar(typ, n, test.data)
+		assert.NoError(err)
+		assert.Equal(test.expected, v, test.typ)
+	}
+
+	// // Nil value
+	// attr.Nullable = true
+	// val, err := attr.UnmarshalToType([]byte("nil"))
+	// assert.NoError(err)
+	// assert.Nil(val)
+
+	// // False value
+	// attr.Type = AttrTypeBool
+	// val, err = attr.UnmarshalToType([]byte("nottrue"))
+	// assert.Error(err)
+	// assert.Nil(val)
+
+	// // Invalid slide of bytes
+	// attr.Type = AttrTypeBytes
+
+	// assert.Panics(func() {
+	// 	_, _ = attr.UnmarshalToType([]byte("invalid"))
+	// })
+	// // assert.Error(err)
+	// // assert.Nil(val)
+
+	// // Invalid attribute type
+	// attr.Type = AttrTypeInvalid
+	// val, err = attr.UnmarshalToType([]byte("invalid"))
+	// err2, ok := err.(Error)
+	// assert.True(ok)
+	// assert.IsType(Error{}, err2)
+	// assert.Nil(val)
+}
+
 func TestRelInvert(t *testing.T) {
 	assert := assert.New(t)
 
